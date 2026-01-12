@@ -1,5 +1,5 @@
 'use client'
-import { Avatar, Box, Button, Divider, Grid, TextField, Typography } from "@mui/material";
+import { Alert, Avatar, Box, Button, Divider, Grid, Snackbar, TextField, Typography } from "@mui/material";
 import LockIcon from '@mui/icons-material/Lock';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import GoogleIcon from '@mui/icons-material/Google';
@@ -13,7 +13,7 @@ import { signIn } from "next-auth/react";
 import { ArrowBack } from "@mui/icons-material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-s
+
 const AuthSignIn = (props: any) => {
     const router = useRouter();
 
@@ -26,6 +26,9 @@ const AuthSignIn = (props: any) => {
 
     const [errorUsername, setErrorUsername] = useState<string>("");
     const [errorPassword, setErrorPassword] = useState<string>("");
+
+    const [openMessage, setOpenMessage] = useState<boolean>(false);
+    const [resMessage, setResMessage] = useState<string>("");
 
 
     const handleSubmit = async () => {
@@ -52,7 +55,8 @@ const AuthSignIn = (props: any) => {
         if (!res?.error) {
             router.push("/")
         } else {
-            alert(res?.error)
+            setOpenMessage(true);
+            setResMessage(res.error);
         }
     }
 
@@ -117,6 +121,11 @@ const AuthSignIn = (props: any) => {
                         />
                         <TextField
                             onChange={(event) => setPassword(event.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    handleSubmit();
+                                }
+                            }}
                             variant="outlined"
                             margin="normal"
                             required
@@ -181,6 +190,21 @@ const AuthSignIn = (props: any) => {
                     </div>
                 </Grid>
             </Grid>
+
+            <Snackbar
+                open={openMessage}
+                // autoHideDuration={5000}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert
+                    onClose={() => setOpenMessage(false)}
+                    severity="error"
+                    sx={{ width: '100%' }}
+
+                >
+                    {resMessage}
+                </Alert>
+            </Snackbar>
 
         </Box>
 
