@@ -3,7 +3,7 @@ import NextAuth, { AuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials"
-
+import NextErrorComponent from "next/error";
 
 export const authOptions: AuthOptions = {
     secret: process.env.NO_SECRET,
@@ -40,8 +40,7 @@ export const authOptions: AuthOptions = {
                 if (res && res.data) {
                     return res.data as any
                 } else {
-                    return null
-
+                    throw new Error(res?.message as string)
                 }
             }
         }),
@@ -91,9 +90,7 @@ export const authOptions: AuthOptions = {
             return session;
         }
     },
-    // pages: {
-    //     signIn: "/auth/signin"
-    // }
+
 };
 
 const handler = NextAuth(authOptions);
