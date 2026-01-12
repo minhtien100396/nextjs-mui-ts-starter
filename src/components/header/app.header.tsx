@@ -63,6 +63,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function AppHeader() {
     const { data: session } = useSession();
+    console.log("session", session)
 
     const router = useRouter();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -106,7 +107,6 @@ export default function AppHeader() {
             open={isMenuOpen}
             onClose={() => {
                 handleMenuClose();
-                signOut();
             }}
         >
             <MenuItem>
@@ -120,16 +120,13 @@ export default function AppHeader() {
                     Profile
                 </Link>
             </MenuItem>
-            <MenuItem>
-                <Link
-                    href={"logout"}
-                    style={{
-                        color: "unset",
-                        textDecoration: "unset",
-                    }}
-                >
-                    Logout
-                </Link>
+            <MenuItem
+                onClick={() => {
+                    handleMenuClose();
+                    signOut();
+                }}
+            >
+                Logout
             </MenuItem>
         </Menu>
     );
@@ -250,7 +247,9 @@ export default function AppHeader() {
                                 </>
                             ) : (
                                 <>
-                                    <Link href={"#"} onClick={() => signIn()}>
+                                    <Link href={"/auth/signin"}
+                                    // onClick={() => signIn()}
+                                    >
                                         Login
                                     </Link>
                                 </>
