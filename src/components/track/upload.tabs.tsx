@@ -1,11 +1,11 @@
 'use client'
 
-import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import { Container } from "@mui/material";
-import Step1 from './step/step1';
+import Step1 from './steps/step1';
+import Step2 from './steps/step2';
+import { useState } from 'react';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -35,7 +35,13 @@ const UploadTabs = () => {
         );
     }
 
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = useState(0);
+
+    const [trackUpload, setUploadTrack] = useState({
+        fileName: "",
+        percent: 0,
+        uploadedTrackName: ""
+    })
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -54,10 +60,16 @@ const UploadTabs = () => {
                 </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
-                <Step1 />
+                <Step1
+                    setValue={setValue}
+                    setUploadTrack={setUploadTrack}
+                    trackUpload={trackUpload}
+                />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-                Item Two
+                <Step2
+                    trackUpload={trackUpload}
+                />
             </CustomTabPanel>
         </Box>
     );
