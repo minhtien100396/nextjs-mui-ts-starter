@@ -35,8 +35,8 @@ function InputFileUpload() {
             Upload files
             <VisuallyHiddenInput
                 type="file"
-                // onChange={(event) => console.log(event.target.files)}
-                multiple
+            // onChange={(event) => console.log(event.target.files)}
+            // multiple
             />
         </Button>
     );
@@ -67,7 +67,6 @@ const Step1 = (props: IProps) => {
                         headers: {
                             Authorization: `Bearer ${session?.access_token}`,
                             target_type: "tracks",
-                            delay: 5000
                         },
                         onUploadProgress: progressEvent => {
                             let percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total!);
@@ -78,10 +77,10 @@ const Step1 = (props: IProps) => {
                             })
                         }
                     })
-                setUploadTrack({
-                    ...trackUpload,
+                setUploadTrack((prevState: any) => ({
+                    ...prevState,
                     uploadedTrackName: res?.data?.data?.fileName
-                })
+                }))
 
             } catch (error) {
                 //@ts-ignore

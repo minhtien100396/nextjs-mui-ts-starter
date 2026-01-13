@@ -12,6 +12,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSession } from "next-auth/react";
+import { sendRequest } from '@/utils/api';
+import { useToast } from '@/utils/toast';
 
 
 function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
@@ -54,6 +56,7 @@ const VisuallyHiddenInput = styled('input')({
 function InputFileUpload(props: any) {
     const { data: session } = useSession();
     const { setInfo, info } = props;
+    const toast = useToast();
 
     const handleUploadImg = async (image: any) => {
         try {
@@ -67,16 +70,16 @@ function InputFileUpload(props: any) {
                         target_type: "images",
                     },
                 })
-            console.log("res>>", res)
-            setInfo(
-                ...info,
-                imgUrl = res.data.data.fileName
 
-            )
+            setInfo({
+                ...info,
+                imgUrl: res?.data?.data?.fileName
+            });
+
 
         } catch (error) {
             //@ts-ignore
-            console.log("check error>>>", error?.response?.data)
+            toast.error(error?.response?.data?.message)
         }
     }
 
@@ -86,7 +89,6 @@ function InputFileUpload(props: any) {
                 const event = e.target as HTMLInputElement;
                 if (event.files) {
                     handleUploadImg(event.files[0])
-                    console.log("target File", event.files[0])
                 }
             }}
             component="label" variant="contained" startIcon={<CloudUploadIcon />}>
@@ -111,10 +113,13 @@ interface IProps {
         fileName: string;
         percent: number,
         uploadedTrackName: string;
-    }
+    },
+    setValue: (v: number) => void;
 }
 
 const Step2 = (props: IProps) => {
+    const { data: session } = useSession();
+    const toast = useToast();
 
     const [info, setInfo] = useState<INewTrack>({
         title: "",
@@ -124,7 +129,7 @@ const Step2 = (props: IProps) => {
         category: "",
     });
 
-    const { trackUpload } = props;
+    const { trackUpload, setValue } = props;
 
     useEffect(() => {
         if (trackUpload && trackUpload.uploadedTrackName) {
@@ -152,8 +157,29 @@ const Step2 = (props: IProps) => {
         }
     ];
 
+    const handleSubmitForm = async () => {
+        const res = await sendRequest<IBackendRes<ITrackTop[]>>({
+            url: "http://localhost:8000/api/v1/tracks",
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${session?.access_token}`,
+            },
+            body: {
+                title: info.title,
+                description: info.description,
+                trackUrl: info.trackUrl,
+                imgUrl: info.imgUrl,
+                category: info.category,
+            },
+        });
+        if (res.data) {
+            toast.success("Create a new track success!")
+            setValue(0);
+        } else {
+            toast.error(res?.message)
+        }
+    }
 
-    console.log("info>>>>", info)
     return (
         <div>
             <div>
@@ -176,7 +202,12 @@ const Step2 = (props: IProps) => {
                 >
                     <div style={{ height: 250, width: 250, background: "#ccc" }}>
                         <div>
-
+                            {info.imgUrl &&
+                                <img
+                                    src={`${process.env.NEXT_PUBLIC_BACKEND}/images/${info.imgUrl}`}
+                                    height={"250px"}
+                                    width={"250px"}
+                                />}
                         </div>
 
                     </div>
@@ -233,7 +264,11 @@ const Step2 = (props: IProps) => {
                         variant="outlined"
                         sx={{
                             mt: 5
-                        }}>Save</Button>
+                        }}
+                        onClick={() => handleSubmitForm()}
+                    >
+                        Save
+                    </Button>
                 </Grid>
             </Grid>
 
