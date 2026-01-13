@@ -18,7 +18,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import * as React from "react";
 
 const Search = styled("div")(({ theme }) => ({
@@ -63,7 +63,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function AppHeader() {
     const { data: session } = useSession();
-
     const router = useRouter();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -90,6 +89,7 @@ export default function AppHeader() {
     };
 
     const menuId = "primary-search-account-menu";
+
     const renderMenu = (
         <Menu
             anchorEl={anchorEl}
@@ -110,7 +110,7 @@ export default function AppHeader() {
         >
             <MenuItem>
                 <Link
-                    href={"/profile"}
+                    href={`/profile/${session?.user._id}`}
                     style={{
                         color: "unset",
                         textDecoration: "unset",
@@ -122,7 +122,9 @@ export default function AppHeader() {
             <MenuItem
                 onClick={() => {
                     handleMenuClose();
-                    signOut();
+                    signOut({ callbackUrl: "/" });
+
+
                 }}
             >
                 Logout

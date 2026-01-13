@@ -33,7 +33,6 @@ function LinearProgressWithLabel(props: LinearProgressProps & { value: number })
 
 function LinearWithValueLabel(props: IProps) {
     const { trackUpload } = props;
-
     return (
         <Box sx={{ width: '100%' }}>
             <LinearProgressWithLabel value={trackUpload.percent} />
@@ -114,13 +113,12 @@ interface IProps {
         percent: number,
         uploadedTrackName: string;
     },
-    setValue: (v: number) => void;
+    setValue?: (v: number) => void;
 }
 
 const Step2 = (props: IProps) => {
     const { data: session } = useSession();
     const toast = useToast();
-
     const [info, setInfo] = useState<INewTrack>({
         title: "",
         description: "",
@@ -128,7 +126,6 @@ const Step2 = (props: IProps) => {
         imgUrl: "",
         category: "",
     });
-
     const { trackUpload, setValue } = props;
 
     useEffect(() => {

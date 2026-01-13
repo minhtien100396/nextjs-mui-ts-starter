@@ -1,0 +1,36 @@
+import ProfileTracks from "@/components/header/profile.tracks";
+import { sendRequest } from "@/utils/api";
+import { Container, Grid } from "@mui/material";
+
+const ProfilePage = async (props: any) => {
+    const { params } = props;
+
+
+    const tracks = await sendRequest<IBackendRes<IModelPaginate<ITrackTop>>>({
+        url: "http://localhost:8000/api/v1/tracks/users?current=13&pageSize=5",
+        method: "POST",
+        body: {
+            id: params.slug,
+        },
+    });
+
+    const data = tracks?.data?.result ?? [];
+    console.log("data", data)
+
+    return (
+        <Container sx={{ my: 5 }}>
+            <Grid container spacing={5}>
+                {data.map((item: ITrackTop, index: number) => {
+                    return (
+                        <Grid item xs={12} md={6} key={item._id}>
+                            <ProfileTracks data={item} />
+                        </Grid>
+                    )
+                })}
+            </Grid>
+        </Container>
+    )
+
+}
+
+export default ProfilePage;
