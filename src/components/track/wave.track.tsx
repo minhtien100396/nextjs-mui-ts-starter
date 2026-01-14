@@ -164,7 +164,18 @@ const WaveTrack = (props: IProps) => {
         const percent = (moment / hardCodeDuration) * 100;
         return `${percent}%`;
     };
-    console.log("tack>>>>>>", track);
+
+    useEffect(() => {
+        if (currentTrack.isPlaying && wavesurfer) {
+            wavesurfer.pause()
+        }
+    }, [currentTrack]);
+
+    useEffect(() => {
+        if (track?._id && !currentTrack?._id) {
+            setCurrentTrack({ ...track, isPlaying: false });
+        }
+    }, [track]);
 
     return (
         <div style={{ marginTop: 20 }}>
@@ -193,10 +204,10 @@ const WaveTrack = (props: IProps) => {
                             <div
                                 onClick={() => {
                                     onPlayClick();
-                                    if (track) {
+                                    if (track && wavesurfer) {
                                         setCurrentTrack({
-                                            ...track,
-                                            isPlaying: true,
+                                            ...currentTrack,
+                                            isPlaying: false,
                                         });
                                     }
                                 }}

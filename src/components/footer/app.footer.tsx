@@ -3,7 +3,7 @@ import { useTrackContext } from "@/app/lib/track.wrapper";
 import { useHasMounted } from "@/utils/customHook";
 import { Container } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 
@@ -15,14 +15,18 @@ const AppFooter = () => {
     const { currentTrack, setCurrentTrack } =
         useTrackContext() as ITrackContext;
 
-    //@ts-ignore
-    if (currentTrack.isPlaying === true) {
+    useEffect(() => {
         //@ts-ignore
-        playerRef?.current?.audio?.current?.play();
-    } else {
-        //@ts-ignore
-        playerRef?.current?.audio?.current?.pause();
-    }
+        if (currentTrack.isPlaying === true) {
+            //@ts-ignore
+            playerRef?.current?.audio?.current?.play();
+        } else {
+            //@ts-ignore
+            playerRef?.current?.audio?.current?.pause();
+        }
+
+    }, [currentTrack]);
+
 
     if (!hasMounted) {
         return <></>;
@@ -76,7 +80,7 @@ const AppFooter = () => {
                             minWidth: "100",
                         }}
                     >
-                        <div style={{ color: "#c3c3c3" }}>
+                        <div style={{ color: "#c3c3c3", whiteSpace: "nowrap", }}>
                             {currentTrack.description}
                         </div>
                         <div
