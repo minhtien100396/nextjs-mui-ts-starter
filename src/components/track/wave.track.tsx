@@ -1,5 +1,6 @@
 "use client";
 
+import { useTrackContext } from "@/app/lib/track.wrapper";
 import { useWavesurfer } from "@/utils/customHook";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -9,14 +10,20 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { WaveSurferOptions } from "wavesurfer.js";
 import "./wave.scss";
 
-const WaveTrack = () => {
+interface IProps {
+    track: ITrackTop | null;
+}
+
+const WaveTrack = (props: IProps) => {
+    const { track } = props;
     const searchParams = useSearchParams();
     const fileName = searchParams.get("audio");
     const containerRef = useRef<HTMLDivElement>(null);
     const hoverRef = useRef<HTMLDivElement>(null);
-
     const [time, setTime] = useState<string>("0:00");
     const [duration, setDuration] = useState<string>("0:00");
+    const { currentTrack, setCurrentTrack } =
+        useTrackContext() as ITrackContext;
 
     const optionsMemo = useMemo((): Omit<WaveSurferOptions, "container"> => {
         let gradient, progressGradient;
@@ -157,6 +164,7 @@ const WaveTrack = () => {
         const percent = (moment / hardCodeDuration) * 100;
         return `${percent}%`;
     };
+    console.log("tack>>>>>>", track);
 
     return (
         <div style={{ marginTop: 20 }}>
@@ -183,7 +191,15 @@ const WaveTrack = () => {
                     <div className="info" style={{ display: "flex" }}>
                         <div>
                             <div
-                                onClick={() => onPlayClick()}
+                                onClick={() => {
+                                    onPlayClick();
+                                    if (track) {
+                                        setCurrentTrack({
+                                            ...track,
+                                            isPlaying: true,
+                                        });
+                                    }
+                                }}
                                 style={{
                                     borderRadius: "50%",
                                     background: "#f50",
@@ -216,7 +232,7 @@ const WaveTrack = () => {
                                     color: "white",
                                 }}
                             >
-                                Hỏi Dân IT's song
+                                {track?.title}
                             </div>
                             <div
                                 style={{
@@ -228,7 +244,7 @@ const WaveTrack = () => {
                                     color: "white",
                                 }}
                             >
-                                Eric
+                                {track?.description}
                             </div>
                         </div>
                     </div>

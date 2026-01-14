@@ -5,9 +5,8 @@ import { Container, Grid } from "@mui/material";
 const ProfilePage = async (props: any) => {
     const { params } = props;
 
-
     const tracks = await sendRequest<IBackendRes<IModelPaginate<ITrackTop>>>({
-        url: "http://localhost:8000/api/v1/tracks/users?current=13&pageSize=5",
+        url: "http://localhost:8000/api/v1/tracks/users?current=1&pageSize=10",
         method: "POST",
         body: {
             id: params.slug,
@@ -15,7 +14,7 @@ const ProfilePage = async (props: any) => {
     });
 
     const data = tracks?.data?.result ?? [];
-    console.log("data", data)
+    console.log("data", data);
 
     return (
         <Container sx={{ my: 5 }}>
@@ -25,12 +24,11 @@ const ProfilePage = async (props: any) => {
                         <Grid item xs={12} md={6} key={item._id}>
                             <ProfileTracks data={item} />
                         </Grid>
-                    )
+                    );
                 })}
             </Grid>
         </Container>
-    )
-
-}
+    );
+};
 
 export default ProfilePage;

@@ -1,28 +1,27 @@
-'use client'
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
-import { Settings } from "react-slick";
+"use client";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Box } from "@mui/material";
 import Button from "@mui/material/Button/Button";
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import Divider from '@mui/material/Divider';
+import Divider from "@mui/material/Divider";
 import Link from "next/link";
+import Slider, { Settings } from "react-slick";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
 
 interface IProps {
     data: ITrackTop[];
     title: string;
 }
 
-
 const MainSlider = (props: IProps) => {
     const { data, title } = props;
 
-
     const NextArrow = (props: any) => {
         return (
-            <Button color="inherit" variant="contained"
+            <Button
+                color="inherit"
+                variant="contained"
                 onClick={props.onClick}
                 sx={{
                     position: "absolute",
@@ -35,12 +34,15 @@ const MainSlider = (props: IProps) => {
             >
                 <ChevronRightIcon />
             </Button>
-        )
-    }
+        );
+    };
 
     const PrevArrow = (props: any) => {
         return (
-            <Button color="inherit" variant="contained" onClick={props.onClick}
+            <Button
+                color="inherit"
+                variant="contained"
+                onClick={props.onClick}
                 sx={{
                     position: "absolute",
                     top: "25%",
@@ -51,8 +53,8 @@ const MainSlider = (props: IProps) => {
             >
                 <ChevronLeftIcon />
             </Button>
-        )
-    }
+        );
+    };
 
     const settings: Settings = {
         infinite: true,
@@ -64,44 +66,46 @@ const MainSlider = (props: IProps) => {
     };
     //box === div
     return (
-
         <Box
             sx={{
                 margin: "0 50px",
                 ".track": {
                     padding: "0 10px",
-                    "img": {
+                    img: {
                         height: 150,
-                        width: 150
-                    }
+                        width: 150,
+                    },
                 },
-                "h3": {
+                h3: {
                     border: "1px solid #ccc",
                     padding: "20px",
                     height: "200px",
-
-                }
+                },
             }}
         >
             <h2>{title}</h2>
 
             <Slider {...settings}>
-                {data.map(track => {
+                {data.map((track) => {
                     return (
                         <div className="track" key={track._id}>
-                            <img src={`${process.env.NEXT_PUBLIC_BACKEND}/images/${track.imgUrl}`} alt="" />
-                            <Link href={`track/${track._id}?audio=${track.trackUrl}`}>
+                            <img
+                                src={`${process.env.NEXT_PUBLIC_BACKEND}/images/${track.imgUrl}`}
+                                alt=""
+                            />
+                            <Link
+                                href={`track/${track._id}?audio=${track.trackUrl}&id=${track._id}`}
+                            >
                                 <h4>{track.title}</h4>
                             </Link>
                             <h5>{track.description}</h5>
                         </div>
-                    )
+                    );
                 })}
             </Slider>
             <Divider />
         </Box>
-
     );
-}
+};
 
 export default MainSlider;
