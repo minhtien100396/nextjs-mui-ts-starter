@@ -1,5 +1,6 @@
 import WaveTrack from "@/components/track/wave.track";
 import { sendRequest } from "@/utils/api";
+import { Sort } from "@mui/icons-material";
 import { Container } from "@mui/material";
 
 const DetailTrackPage = async (props: any) => {
@@ -8,10 +9,27 @@ const DetailTrackPage = async (props: any) => {
         url: `http://localhost:8000/api/v1/tracks/${params.slug}`,
         method: "GET",
     });
+
+    const res1 = await sendRequest<IBackendRes<IModelPaginate<ITrackComments>>>({
+        url: `http://localhost:8000/api/v1/tracks/comments`,
+        method: "POST",
+        queryParams: {
+            current: 1,
+            pageSize: 100,
+            trackId: params.slug,
+            sort: "-createdAt",
+        }
+    });
+
+    console.log("res1:", res1?.data);
+
     return (
         <Container>
             <div>
-                <WaveTrack track={res?.data ?? null} />
+                <WaveTrack
+                    track={res?.data ?? null}
+                    comments={res1?.data?.result ?? []}
+                />
             </div>
         </Container>
     );

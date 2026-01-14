@@ -16,17 +16,17 @@ const AppFooter = () => {
         useTrackContext() as ITrackContext;
 
     useEffect(() => {
-        //@ts-ignore
-        if (currentTrack.isPlaying === true) {
-            //@ts-ignore
-            playerRef?.current?.audio?.current?.play();
-        } else {
+        if (currentTrack?.isPlaying === false) {
             //@ts-ignore
             playerRef?.current?.audio?.current?.pause();
+
         }
+        if (currentTrack?.isPlaying === true) {
+            //@ts-ignore
+            playerRef?.current?.audio?.current?.play();
 
-    }, [currentTrack]);
-
+        }
+    }, [currentTrack.isPlaying])
 
     if (!hasMounted) {
         return <></>;

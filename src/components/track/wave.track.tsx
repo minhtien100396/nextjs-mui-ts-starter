@@ -12,10 +12,11 @@ import "./wave.scss";
 
 interface IProps {
     track: ITrackTop | null;
+    comments: ITrackComments[];
 }
 
 const WaveTrack = (props: IProps) => {
-    const { track } = props;
+    const { track, comments } = props;
     const searchParams = useSearchParams();
     const fileName = searchParams.get("audio");
     const containerRef = useRef<HTMLDivElement>(null);
@@ -135,29 +136,6 @@ const WaveTrack = (props: IProps) => {
         return `${minutes}:${paddedSeconds}`;
     };
 
-    const arrComments = [
-        {
-            id: 1,
-            avatar: "http://localhost:8000/images/chill1.png",
-            moment: 10,
-            user: "username 1",
-            content: "just a comment1",
-        },
-        {
-            id: 2,
-            avatar: "http://localhost:8000/images/chill1.png",
-            moment: 30,
-            user: "username 2",
-            content: "just a comment3",
-        },
-        {
-            id: 3,
-            avatar: "http://localhost:8000/images/chill1.png",
-            moment: 50,
-            user: "username 3",
-            content: "just a comment3",
-        },
-    ];
 
     const calLeft = (moment: number) => {
         const hardCodeDuration = 199;
@@ -278,12 +256,12 @@ const WaveTrack = (props: IProps) => {
                             className="comments"
                             style={{ position: "relative" }}
                         >
-                            {arrComments.map((item) => {
+                            {comments.map((item: ITrackComments) => {
                                 return (
                                     <Tooltip
                                         title={item.content}
                                         arrow
-                                        key={item.id}
+                                        key={item._id}
                                     >
                                         <img
                                             onPointerMove={(e) => {
@@ -292,7 +270,7 @@ const WaveTrack = (props: IProps) => {
                                                     item.moment
                                                 );
                                             }}
-                                            key={item.id}
+                                            key={item._id}
                                             style={{
                                                 height: 20,
                                                 width: 20,

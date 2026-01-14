@@ -1,4 +1,4 @@
-export {};
+export { };
 // https://bobbyhadz.com/blog/typescript-make-types-global#declare-global-types-in-typescript
 
 declare global {
@@ -57,5 +57,23 @@ declare global {
     interface ITrackContext {
         currentTrack: IShareTrack;
         setCurrentTrack: (v: IShareTrack) => void;
+    }
+
+    interface ITrackComments {
+        _id: string;
+        content: string;
+        moment: number;
+        user: {
+            _id: string;
+            email: string;
+            name: string;
+            role: string;
+            type: string;
+        };
+        track: ITrackTop
+        isDeleted: boolean;
+        __v: number;
+        createdAt: string;
+        updatedAt: string
     }
 }
