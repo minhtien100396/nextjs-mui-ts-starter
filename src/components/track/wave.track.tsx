@@ -9,11 +9,18 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { WaveSurferOptions } from "wavesurfer.js";
 import "./wave.scss";
+import { fetchDefaultImage, sendRequest } from "@/utils/api";
+import Image from "next/image";
+import CommentTrack from "./comment.track";
+import LikeTrack from "./like.track";
+import { useRouter } from "next/navigation";
 
 interface IProps {
     track: ITrackTop | null;
     comments: ITrackComments[];
 }
+
+
 
 const WaveTrack = (props: IProps) => {
     const { track, comments } = props;
@@ -21,6 +28,8 @@ const WaveTrack = (props: IProps) => {
     const fileName = searchParams.get("audio");
     const containerRef = useRef<HTMLDivElement>(null);
     const hoverRef = useRef<HTMLDivElement>(null);
+    const router = useRouter();
+    const firstViewRef = useRef<boolean>(true);
     const [time, setTime] = useState<string>("0:00");
     const [duration, setDuration] = useState<string>("0:00");
     const { currentTrack, setCurrentTrack } =
@@ -87,6 +96,7 @@ const WaveTrack = (props: IProps) => {
             url: `/api?audio=${fileName}`,
         };
     }, []);
+
     const wavesurfer = useWavesurfer(containerRef, optionsMemo);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
@@ -137,11 +147,14 @@ const WaveTrack = (props: IProps) => {
     };
 
 
-    const calLeft = (moment: number) => {
-        const hardCodeDuration = 199;
-        const percent = (moment / hardCodeDuration) * 100;
-        return `${percent}%`;
-    };
+    const calLeftPer = (move: number) => {
+        if (wavesurfer) {
+            const songLength = wavesurfer.getDuration();
+            const moverPer = (move / songLength) * 100;
+            return `${moverPer}%`;
+        }
+        return ''
+    }
 
     useEffect(() => {
         if (currentTrack.isPlaying && wavesurfer) {
@@ -154,6 +167,34 @@ const WaveTrack = (props: IProps) => {
             setCurrentTrack({ ...track, isPlaying: false });
         }
     }, [track]);
+
+    const handleIncreaseView = async () => {
+        if (firstViewRef.current) {
+            await sendRequest<IBackendRes<IModelPaginate<ITrackLike>>>({
+                url: `${process.env.NEXT_PUBLIC_BACKEND}/api/v1/tracks/increase-view`,
+                method: "POST",
+                body: {
+                    trackId: track?._id,
+                },
+
+            })
+
+            // // Revalidate for clear cache
+            // await sendRequest<IBackendRes<any>>({
+            //     url: `/api/revalidate`,
+            //     method: "POST",
+            //     queryParams: {
+            //         tag: "track-by-id",
+            //         secret: "hiteedev"
+            //     }
+            // })
+
+            // router cache
+            router.refresh();
+            firstViewRef.current = false;
+
+        }
+    };
 
     return (
         <div style={{ marginTop: 20 }}>
@@ -182,6 +223,7 @@ const WaveTrack = (props: IProps) => {
                             <div
                                 onClick={() => {
                                     onPlayClick();
+                                    handleIncreaseView();
                                     if (track && wavesurfer) {
                                         setCurrentTrack({
                                             ...currentTrack,
@@ -263,23 +305,16 @@ const WaveTrack = (props: IProps) => {
                                         arrow
                                         key={item._id}
                                     >
-                                        <img
+                                        <Image
+                                            src={fetchDefaultImage(item.user.type)}
+                                            alt={item.content}
+                                            width={20}
+                                            height={20}
+                                            style={{ position: 'absolute', top: 71, zIndex: 20, left: calLeftPer(item.moment) }}
                                             onPointerMove={(e) => {
                                                 const hover = hoverRef.current!;
-                                                hover.style.width = calLeft(
-                                                    item.moment
-                                                );
+                                                hover.style.width = calLeftPer(item.moment + 3)
                                             }}
-                                            key={item._id}
-                                            style={{
-                                                height: 20,
-                                                width: 20,
-                                                position: "absolute",
-                                                top: 71,
-                                                zIndex: 20,
-                                                left: calLeft(item.moment),
-                                            }}
-                                            src={`http://localhost:8000/images/chill1.png`}
                                         />
                                     </Tooltip>
                                 );
@@ -296,16 +331,40 @@ const WaveTrack = (props: IProps) => {
                         alignItems: "center",
                     }}
                 >
-                    <div
-                        style={{
-                            background: "#ccc",
-                            width: 250,
-                            height: 250,
-                        }}
-                    ></div>
+
+                    {
+                        track?.imgUrl ?
+                            <Image
+                                src={`${process.env.NEXT_PUBLIC_BACKEND}/images/${track?.imgUrl}`}
+                                alt=""
+                                width={250}
+                                height={250}
+                                style={{ objectFit: "cover" }}
+                            >
+                            </Image> :
+                            <div style={{
+                                background: "#ccc",
+                                width: 250,
+                                height: 250
+                            }}>
+                            </div>
+                    }
                 </div>
             </div>
+            <div>
+                <LikeTrack
+                    track={track}
+                />
+            </div>
+            <div>
+                <CommentTrack
+                    track={track}
+                    comments={comments}
+                    wavesurfer={wavesurfer}
+                />
+            </div>
         </div>
+
     );
 };
 

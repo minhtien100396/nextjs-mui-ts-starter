@@ -1,6 +1,5 @@
 import WaveTrack from "@/components/track/wave.track";
 import { sendRequest } from "@/utils/api";
-import { Sort } from "@mui/icons-material";
 import { Container } from "@mui/material";
 
 const DetailTrackPage = async (props: any) => {
@@ -20,8 +19,6 @@ const DetailTrackPage = async (props: any) => {
             sort: "-createdAt",
         }
     });
-
-    console.log("res1:", res1?.data);
 
     return (
         <Container>

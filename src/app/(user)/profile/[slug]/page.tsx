@@ -14,7 +14,6 @@ const ProfilePage = async (props: any) => {
     });
 
     const data = tracks?.data?.result ?? [];
-    console.log("data", data);
 
     return (
         <Container sx={{ my: 5 }}>
