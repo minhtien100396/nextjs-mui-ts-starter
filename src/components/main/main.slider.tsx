@@ -1,4 +1,5 @@
 "use client";
+import { convertSlugUrl } from "@/utils/api";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Box } from "@mui/material";
@@ -94,7 +95,7 @@ const MainSlider = (props: IProps) => {
                                 alt=""
                             />
                             <Link
-                                href={`track/${track._id}?audio=${track.trackUrl}&id=${track._id}`}
+                                href={`track/${convertSlugUrl(track.title)}-${track._id}.html?audio=${track.trackUrl}`}
                             >
                                 <h4>{track.title}</h4>
                             </Link>

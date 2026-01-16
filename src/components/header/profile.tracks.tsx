@@ -1,6 +1,7 @@
 "use client";
 
 import { useTrackContext } from "@/app/lib/track.wrapper";
+import { convertSlugUrl } from "@/utils/api";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
@@ -26,7 +27,7 @@ const ProfileTracks = (props: any) => {
                 <CardContent sx={{ flex: "1 0 auto" }}>
                     <Typography component="div" variant="h5">
                         <Link
-                            href={`/track/${data._id}?audio=${data.trackUrl}&id=${data._id}`}
+                            href={`/track/${convertSlugUrl(data.title)}-${data._id}.html?audio=${data.trackUrl}`}
                         >
                             {data.title}
                         </Link>
@@ -52,15 +53,15 @@ const ProfileTracks = (props: any) => {
                     {(data._id !== currentTrack._id ||
                         (data._id === currentTrack._id &&
                             currentTrack.isPlaying === false)) && (
-                        <IconButton
-                            aria-label="play/pause"
-                            onClick={(e) => {
-                                setCurrentTrack({ ...data, isPlaying: true });
-                            }}
-                        >
-                            <PlayArrowIcon sx={{ height: 38, width: 38 }} />
-                        </IconButton>
-                    )}
+                            <IconButton
+                                aria-label="play/pause"
+                                onClick={(e) => {
+                                    setCurrentTrack({ ...data, isPlaying: true });
+                                }}
+                            >
+                                <PlayArrowIcon sx={{ height: 38, width: 38 }} />
+                            </IconButton>
+                        )}
                     {data._id === currentTrack._id &&
                         currentTrack.isPlaying === true && (
                             <IconButton
