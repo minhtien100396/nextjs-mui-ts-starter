@@ -1,35 +1,33 @@
 "use client";
 
-import { useTrackContext } from "@/app/lib/track.wrapper";
+import { fetchDefaultImage, sendRequest } from "@/utils/api";
 import { useWavesurfer } from "@/utils/customHook";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { Tooltip } from "@mui/material";
-import { useSearchParams } from "next/navigation";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { WaveSurferOptions } from "wavesurfer.js";
-import "./wave.scss";
-import { fetchDefaultImage, sendRequest } from "@/utils/api";
-import Image from "next/image";
 import CommentTrack from "./comment.track";
-import LikeTrack from "./like.track";
-import { useRouter } from "next/navigation";
+import "./wave.scss";
 
+import { useTrackContext } from "@/app/lib/track.wrapper";
+import LikeTrack from "./like.track";
 interface IProps {
     track: ITrackTop | null;
     comments: ITrackComments[];
 }
 
-
-
 const WaveTrack = (props: IProps) => {
     const { track, comments } = props;
+    const router = useRouter();
+    const firstViewRef = useRef(true);
+
     const searchParams = useSearchParams();
     const fileName = searchParams.get("audio");
     const containerRef = useRef<HTMLDivElement>(null);
     const hoverRef = useRef<HTMLDivElement>(null);
-    const router = useRouter();
-    const firstViewRef = useRef<boolean>(true);
     const [time, setTime] = useState<string>("0:00");
     const [duration, setDuration] = useState<string>("0:00");
     const { currentTrack, setCurrentTrack } =
@@ -96,10 +94,8 @@ const WaveTrack = (props: IProps) => {
             url: `/api?audio=${fileName}`,
         };
     }, []);
-
     const wavesurfer = useWavesurfer(containerRef, optionsMemo);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
-
     // Initialize wavesurfer when the container mounts
     // or any of the props change
     useEffect(() => {
@@ -146,26 +142,21 @@ const WaveTrack = (props: IProps) => {
         return `${minutes}:${paddedSeconds}`;
     };
 
-
-    const calLeftPer = (move: number) => {
-        if (wavesurfer) {
-            const songLength = wavesurfer.getDuration();
-            const moverPer = (move / songLength) * 100;
-            return `${moverPer}%`;
-        }
-        return ''
-    }
+    const calLeft = (moment: number) => {
+        const hardCodeDuration = wavesurfer?.getDuration() ?? 0;
+        const percent = (moment / hardCodeDuration) * 100;
+        return `${percent}%`;
+    };
 
     useEffect(() => {
-        if (currentTrack.isPlaying && wavesurfer) {
-            wavesurfer.pause()
+        if (wavesurfer && currentTrack.isPlaying) {
+            wavesurfer.pause();
         }
     }, [currentTrack]);
 
     useEffect(() => {
-        if (track?._id && !currentTrack?._id) {
+        if (track?._id && !currentTrack?._id)
             setCurrentTrack({ ...track, isPlaying: false });
-        }
     }, [track]);
 
     const handleIncreaseView = async () => {
@@ -176,23 +167,18 @@ const WaveTrack = (props: IProps) => {
                 body: {
                     trackId: track?._id,
                 },
+            });
 
-            })
-
-            // // Revalidate for clear cache
             // await sendRequest<IBackendRes<any>>({
             //     url: `/api/revalidate`,
             //     method: "POST",
             //     queryParams: {
             //         tag: "track-by-id",
-            //         secret: "hiteedev"
-            //     }
-            // })
-
-            // router cache
+            //         secret: "justArandomString",
+            //     },
+            // });
             router.refresh();
             firstViewRef.current = false;
-
         }
     };
 
@@ -298,7 +284,7 @@ const WaveTrack = (props: IProps) => {
                             className="comments"
                             style={{ position: "relative" }}
                         >
-                            {comments.map((item: ITrackComments) => {
+                            {comments?.map((item) => {
                                 return (
                                     <Tooltip
                                         title={item.content}
@@ -306,14 +292,23 @@ const WaveTrack = (props: IProps) => {
                                         key={item._id}
                                     >
                                         <Image
-                                            src={fetchDefaultImage(item.user.type)}
-                                            alt={item.content}
-                                            width={20}
-                                            height={20}
-                                            style={{ position: 'absolute', top: 71, zIndex: 20, left: calLeftPer(item.moment) }}
                                             onPointerMove={(e) => {
                                                 const hover = hoverRef.current!;
-                                                hover.style.width = calLeftPer(item.moment + 3)
+                                                hover.style.width = calLeft(
+                                                    item.moment
+                                                );
+                                            }}
+                                            src={fetchDefaultImage(
+                                                item.user.type
+                                            )}
+                                            alt="user comment"
+                                            height={20}
+                                            width={20}
+                                            style={{
+                                                position: "absolute",
+                                                top: 71,
+                                                zIndex: 20,
+                                                left: calLeft(item.moment),
                                             }}
                                         />
                                     </Tooltip>
@@ -331,40 +326,35 @@ const WaveTrack = (props: IProps) => {
                         alignItems: "center",
                     }}
                 >
-
-                    {
-                        track?.imgUrl ?
-                            <Image
-                                src={`${process.env.NEXT_PUBLIC_BACKEND}/images/${track?.imgUrl}`}
-                                alt=""
-                                width={250}
-                                height={250}
-                                style={{ objectFit: "cover" }}
-                            >
-                            </Image> :
-                            <div style={{
+                    {track?.imgUrl ? (
+                        <Image
+                            src={`${process.env.NEXT_PUBLIC_BACKEND}/images/${track?.imgUrl}`}
+                            width={250}
+                            height={250}
+                            alt="image track"
+                        />
+                    ) : (
+                        <div
+                            style={{
                                 background: "#ccc",
                                 width: 250,
-                                height: 250
-                            }}>
-                            </div>
-                    }
+                                height: 250,
+                            }}
+                        ></div>
+                    )}
                 </div>
             </div>
             <div>
-                <LikeTrack
-                    track={track}
-                />
+                <LikeTrack track={track} />
             </div>
             <div>
                 <CommentTrack
-                    track={track}
                     comments={comments}
+                    track={track}
                     wavesurfer={wavesurfer}
                 />
             </div>
         </div>
-
     );
 };
 

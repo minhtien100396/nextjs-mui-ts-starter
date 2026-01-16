@@ -1,18 +1,28 @@
-'use client'
-import { Alert, Avatar, Box, Button, Divider, Grid, Snackbar, TextField, Typography } from "@mui/material";
-import LockIcon from '@mui/icons-material/Lock';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import GoogleIcon from '@mui/icons-material/Google';
+"use client";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import GoogleIcon from "@mui/icons-material/Google";
+import LockIcon from "@mui/icons-material/Lock";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
+import {
+    Alert,
+    Avatar,
+    Box,
+    Button,
+    Divider,
+    Grid,
+    Snackbar,
+    TextField,
+    Typography,
+} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { ArrowBack } from "@mui/icons-material";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const AuthSignIn = (props: any) => {
     const router = useRouter();
@@ -30,7 +40,6 @@ const AuthSignIn = (props: any) => {
     const [openMessage, setOpenMessage] = useState<boolean>(false);
     const [resMessage, setResMessage] = useState<string>("");
 
-
     const handleSubmit = async () => {
         setIsErrorUsername(false);
         setIsErrorPassword(false);
@@ -39,41 +48,44 @@ const AuthSignIn = (props: any) => {
 
         if (!username) {
             setIsErrorUsername(true);
-            setErrorUsername("Username is not empty.")
+            setErrorUsername("Username is not empty.");
             return;
         }
         if (!password) {
             setIsErrorPassword(true);
-            setErrorPassword("Password is not empty.")
+            setErrorPassword("Password is not empty.");
             return;
         }
         const res = await signIn("credentials", {
             username: username,
             password: password,
-            redirect: false
-        })
+            redirect: false,
+        });
         if (!res?.error) {
-            router.push("/")
+            router.push("/");
         } else {
             setOpenMessage(true);
             setResMessage(res.error);
         }
-    }
+    };
 
     return (
         <Box
-            sx={{
-                // backgroundImage: "linear-gradient(to bottom, #ff9aef, #fedac1, #d5e1cf, #b7e6d9)",
-                // backgroundColor: "#b7e6d9",
-                // backgroundRepeat: "no-repeat"
-            }}
+            sx={
+                {
+                    // backgroundImage: "linear-gradient(to bottom, #ff9aef, #fedac1, #d5e1cf, #b7e6d9)",
+                    // backgroundColor: "#b7e6d9",
+                    // backgroundRepeat: "no-repeat"
+                }
+            }
         >
-            <Grid container
+            <Grid
+                container
                 sx={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    minHeight: "100vh"
+                    minHeight: "100vh",
                 }}
             >
                 <Grid
@@ -83,32 +95,33 @@ const AuthSignIn = (props: any) => {
                     md={5}
                     lg={4}
                     sx={{
-                        boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"
+                        boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
                     }}
                 >
                     <div style={{ margin: "50px" }}>
                         <Link href={"/"}>
                             <ArrowBack />
                         </Link>
-                        <Box sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            flexDirection: "column",
-                            width: "100%"
-                        }}>
-
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                flexDirection: "column",
+                                width: "100%",
+                            }}
+                        >
                             <Avatar>
                                 <LockIcon />
                             </Avatar>
 
-                            <Typography component="h1">
-                                Sign in
-                            </Typography>
+                            <Typography component="h1">Sign in</Typography>
                         </Box>
 
                         <TextField
-                            onChange={(event) => setUsername(event.target.value)}
+                            onChange={(event) =>
+                                setUsername(event.target.value)
+                            }
                             variant="outlined"
                             margin="normal"
                             required
@@ -120,7 +133,9 @@ const AuthSignIn = (props: any) => {
                             helperText={errorUsername}
                         />
                         <TextField
-                            onChange={(event) => setPassword(event.target.value)}
+                            onChange={(event) =>
+                                setPassword(event.target.value)
+                            }
                             onKeyDown={(e) => {
                                 if (e.key === "Enter") {
                                     handleSubmit();
@@ -135,19 +150,27 @@ const AuthSignIn = (props: any) => {
                             type={showPassword ? "text" : "password"}
                             error={isErrorPassword}
                             helperText={errorPassword}
-
                             InputProps={{
-                                endAdornment:
+                                endAdornment: (
                                     <InputAdornment position="end">
-                                        <IconButton onClick={() => setShowPassword(!showPassword)}>
-                                            {showPassword === false ? <VisibilityOff /> : <Visibility />}
+                                        <IconButton
+                                            onClick={() =>
+                                                setShowPassword(!showPassword)
+                                            }
+                                        >
+                                            {showPassword === false ? (
+                                                <VisibilityOff />
+                                            ) : (
+                                                <Visibility />
+                                            )}
                                         </IconButton>
-                                    </InputAdornment>,
+                                    </InputAdornment>
+                                ),
                             }}
                         />
                         <Button
                             sx={{
-                                my: 3
+                                my: 3,
                             }}
                             type="submit"
                             fullWidth
@@ -163,16 +186,16 @@ const AuthSignIn = (props: any) => {
                                 display: "flex",
                                 justifyContent: "center",
                                 gap: "25px",
-                                mt: 3
+                                mt: 3,
                             }}
                         >
                             <Avatar
                                 sx={{
                                     cursor: "pointer",
-                                    bgcolor: "orange"
+                                    bgcolor: "orange",
                                 }}
                                 onClick={() => {
-                                    signIn("github")
+                                    signIn("github");
                                 }}
                             >
                                 <GitHubIcon titleAccess="Login with Github" />
@@ -181,10 +204,10 @@ const AuthSignIn = (props: any) => {
                             <Avatar
                                 sx={{
                                     cursor: "pointer",
-                                    bgcolor: "orange"
+                                    bgcolor: "orange",
                                 }}
                             >
-                                < GoogleIcon titleAccess="Login with Google" />
+                                <GoogleIcon titleAccess="Login with Google" />
                             </Avatar>
                         </Box>
                     </div>
@@ -199,16 +222,13 @@ const AuthSignIn = (props: any) => {
                 <Alert
                     onClose={() => setOpenMessage(false)}
                     severity="error"
-                    sx={{ width: '100%' }}
-
+                    sx={{ width: "100%" }}
                 >
                     {resMessage}
                 </Alert>
             </Snackbar>
-
         </Box>
-
-    )
-}
+    );
+};
 
 export default AuthSignIn;

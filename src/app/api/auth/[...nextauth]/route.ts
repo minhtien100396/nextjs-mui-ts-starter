@@ -1,9 +1,8 @@
 import { sendRequest } from "@/utils/api";
 import NextAuth, { AuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
+import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
-import CredentialsProvider from "next-auth/providers/credentials"
-import NextErrorComponent from "next/error";
 
 export const authOptions: AuthOptions = {
     secret: process.env.NO_SECRET,
@@ -11,14 +10,14 @@ export const authOptions: AuthOptions = {
     providers: [
         CredentialsProvider({
             // The name to display on the sign in form (e.g. 'Sign in with...')
-            name: 'SoundCloud',
+            name: "SoundCloud",
             // The credentials is used to generate a suitable form on the sign in page.
             // You can specify whatever fields you are expecting to be submitted.
             // e.g. domain, username, password, 2FA token, etc.
             // You can pass any HTML attribute to the <input> tag through the object.
             credentials: {
-                username: { label: "Username", type: "text", },
-                password: { label: "Password", type: "password" }
+                username: { label: "Username", type: "text" },
+                password: { label: "Password", type: "password" },
             },
             async authorize(credentials, req) {
                 // You need to provide your own logic here that takes the credentials
@@ -33,16 +32,16 @@ export const authOptions: AuthOptions = {
                     method: "POST",
                     body: {
                         username: credentials?.username,
-                        password: credentials?.password
+                        password: credentials?.password,
                     },
                 });
 
                 if (res && res.data) {
-                    return res.data as any
+                    return res.data as any;
                 } else {
-                    throw new Error(res?.message as string)
+                    throw new Error(res?.message as string);
                 }
-            }
+            },
         }),
 
         GithubProvider({
@@ -67,7 +66,6 @@ export const authOptions: AuthOptions = {
                     token.refresh_token = res.data.refresh_token;
                     token.user = res.data.user;
                 }
-
             }
             if (trigger === "signIn" && account?.provider === "credentials") {
                 //@ts-ignore
@@ -88,9 +86,8 @@ export const authOptions: AuthOptions = {
                 session.user = token.user;
             }
             return session;
-        }
+        },
     },
-
 };
 
 const handler = NextAuth(authOptions);
