@@ -15,6 +15,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 function LinearProgressWithLabel(
@@ -204,10 +205,11 @@ const Step2 = (props: IProps) => {
                     >
                         <div>
                             {info.imgUrl && (
-                                <img
+                                <Image
                                     src={`${process.env.NEXT_PUBLIC_BACKEND}/images/${info.imgUrl}`}
-                                    height={"250px"}
-                                    width={"250px"}
+                                    height={250}
+                                    width={250}
+                                    alt="image track"
                                 />
                             )}
                         </div>

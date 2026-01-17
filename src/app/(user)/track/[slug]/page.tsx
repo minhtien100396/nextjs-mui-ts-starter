@@ -3,6 +3,7 @@ import { sendRequest } from "@/utils/api";
 import { Container } from "@mui/material";
 
 import type { Metadata, ResolvingMetadata } from "next";
+import { notFound } from "next/navigation";
 
 type Props = {
     params: { slug: string };
@@ -13,9 +14,8 @@ export async function generateMetadata(
     { params, searchParams }: Props,
     parent: ResolvingMetadata
 ): Promise<Metadata> {
-
     const temp = params?.slug?.split(".html") ?? [];
-    const temp1 = (temp[0].split("-")) as string[];
+    const temp1 = temp[0].split("-") as string[];
     const id = temp1[temp1.length - 1];
 
     // fetch data
@@ -42,7 +42,7 @@ export async function generateMetadata(
 const DetailTrackPage = async (props: any) => {
     const { params } = props;
     const temp = params?.slug?.split(".html") ?? [];
-    const temp1 = (temp[0].split("-")) as string[];
+    const temp1 = temp[0].split("-") as string[];
     const id = temp1[temp1.length - 1];
     console.log("params slug:", id);
     const res = await sendRequest<IBackendRes<ITrackTop>>({
@@ -63,6 +63,10 @@ const DetailTrackPage = async (props: any) => {
             nextOption: { cache: "no-store" },
         }
     );
+
+    if (!res.data) {
+        notFound();
+    }
 
     return (
         <Container>

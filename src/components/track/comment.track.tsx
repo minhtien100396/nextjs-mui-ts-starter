@@ -86,7 +86,7 @@ const CommentTrack = (props: IProps) => {
                 <div className="uploader">
                     <Image
                         src={fetchDefaultImage(track?.uploader.type!)}
-                        alt=""
+                        alt="avatar comment"
                         width={150}
                         height={150}
                         style={{ borderRadius: "50%" }}
@@ -111,7 +111,7 @@ const CommentTrack = (props: IProps) => {
                                     src={fetchDefaultImage(comment.user.type)}
                                     width={40}
                                     height={40}
-                                    alt=""
+                                    alt="comment"
                                     style={{ borderRadius: "50%" }}
                                 />
                                 <div>

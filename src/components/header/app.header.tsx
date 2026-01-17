@@ -1,11 +1,11 @@
 "use client";
+import { fetchDefaultImage } from "@/utils/api";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import SearchIcon from "@mui/icons-material/Search";
 import AppBar from "@mui/material/AppBar";
-import Avatar from "@mui/material/Avatar";
 import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -16,9 +16,10 @@ import MenuItem from "@mui/material/MenuItem";
 import { alpha, styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 
 const Search = styled("div")(({ theme }) => ({
@@ -123,8 +124,6 @@ export default function AppHeader() {
                 onClick={() => {
                     handleMenuClose();
                     signOut({ callbackUrl: "/" });
-
-
                 }}
             >
                 Logout
@@ -242,16 +241,19 @@ export default function AppHeader() {
                                     <Link href={"/playlist"}>Playlists</Link>
                                     <Link href={"/like"}>Likes</Link>
                                     <Link href={"/track/upload"}>Upload</Link>
-                                    <Avatar onClick={handleProfileMenuOpen}>
-                                        ER
-                                    </Avatar>
+                                    <Image
+                                        onClick={handleProfileMenuOpen}
+                                        src={fetchDefaultImage(
+                                            session.user.type
+                                        )}
+                                        alt="avatar"
+                                        height={35}
+                                        width={35}
+                                    />
                                 </>
                             ) : (
                                 <>
-                                    <Link href={"/auth/signin"}
-                                    >
-                                        Login
-                                    </Link>
+                                    <Link href={"/auth/signin"}>Login</Link>
                                 </>
                             )}
                         </Box>
