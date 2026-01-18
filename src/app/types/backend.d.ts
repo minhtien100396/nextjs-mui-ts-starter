@@ -1,4 +1,4 @@
-export { };
+export {};
 // https://bobbyhadz.com/blog/typescript-make-types-global#declare-global-types-in-typescript
 
 declare global {
@@ -70,24 +70,34 @@ declare global {
             role: string;
             type: string;
         };
-        track: ITrackTop
+        track: ITrackTop;
         isDeleted: boolean;
         __v: number;
         createdAt: string;
-        updatedAt: string
+        updatedAt: string;
     }
 
     interface ITrackLike {
-        "_id": string;
-        "title": string;
-        "description": string;
-        "category": string;
-        "imgUrl": string;
-        "trackUrl": string;
-        "countLike": number;
-        "countPlay": number;
-        "createdAt": string;
-        "updatedAt": string;
+        _id: string;
+        title: string;
+        description: string;
+        category: string;
+        imgUrl: string;
+        trackUrl: string;
+        countLike: number;
+        countPlay: number;
+        createdAt: string;
+        updatedAt: string;
     }
 
+    interface IPlaylist {
+        _id: string;
+        title: string;
+        isPublic: boolean;
+        user: string;
+        tracks: IShareTrack[];
+        isDeleted: boolean;
+        createdAt: string;
+        updatedAt: string;
+    }
 }

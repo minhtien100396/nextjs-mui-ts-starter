@@ -162,21 +162,21 @@ const WaveTrack = (props: IProps) => {
     const handleIncreaseView = async () => {
         if (firstViewRef.current) {
             await sendRequest<IBackendRes<IModelPaginate<ITrackLike>>>({
-                url: `${process.env.NEXT_PUBLIC_BACKEND}/api/v1/tracks/increase-view`,
+                url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/increase-view`,
                 method: "POST",
                 body: {
                     trackId: track?._id,
                 },
             });
 
-            // await sendRequest<IBackendRes<any>>({
-            //     url: `/api/revalidate`,
-            //     method: "POST",
-            //     queryParams: {
-            //         tag: "track-by-id",
-            //         secret: "justArandomString",
-            //     },
-            // });
+            await sendRequest<IBackendRes<any>>({
+                url: `/api/revalidate`,
+                method: "POST",
+                queryParams: {
+                    tag: "track-by-id",
+                    secret: "justArandomString",
+                },
+            });
             router.refresh();
             firstViewRef.current = false;
         }
@@ -328,7 +328,7 @@ const WaveTrack = (props: IProps) => {
                 >
                     {track?.imgUrl ? (
                         <Image
-                            src={`${process.env.NEXT_PUBLIC_BACKEND}/images/${track?.imgUrl}`}
+                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track?.imgUrl}`}
                             width={250}
                             height={250}
                             alt="image track"

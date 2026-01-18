@@ -27,7 +27,7 @@ const CommentTrack = (props: IProps) => {
         const res = await sendRequest<
             IBackendRes<IModelPaginate<ITrackComments>>
         >({
-            url: `${process.env.NEXT_PUBLIC_BACKEND}/api/v1/comments`,
+            url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/comments`,
             method: "POST",
             headers: {
                 Authorization: `Bearer ${session?.access_token}`,

@@ -20,9 +20,9 @@ export async function generateMetadata(
 
     // fetch data
     const res = await sendRequest<IBackendRes<ITrackTop>>({
-        url: `http://localhost:8000/api/v1/tracks/${id}`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${id}`,
         method: "GET",
-        nextOption: { cache: "no-store" },
+        // nextOption: { cache: "no-store" },
     });
 
     return {
@@ -39,20 +39,33 @@ export async function generateMetadata(
     };
 }
 
+export async function generateStaticParams() {
+    return [
+        { slug: "dreaming-of-you-6966f68e53bf17d60608df55.html" },
+        { slug: "song-cho-het-doi-thanh-xuan-6966f68e53bf17d60608df45.html" },
+        { slug: "xi-mang-pho-6966f68e53bf17d60608df43.html" },
+    ];
+}
+
 const DetailTrackPage = async (props: any) => {
     const { params } = props;
     const temp = params?.slug?.split(".html") ?? [];
     const temp1 = temp[0].split("-") as string[];
     const id = temp1[temp1.length - 1];
-    console.log("params slug:", id);
+
     const res = await sendRequest<IBackendRes<ITrackTop>>({
-        url: `http://localhost:8000/api/v1/tracks/${id}`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${id}`,
         method: "GET",
+        nextOption: {
+            next: {
+                tags: [`track-by-id`],
+            },
+        },
     });
 
     const res1 = await sendRequest<IBackendRes<IModelPaginate<ITrackComments>>>(
         {
-            url: `http://localhost:8000/api/v1/tracks/comments`,
+            url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/comments`,
             method: "POST",
             queryParams: {
                 current: 1,
@@ -60,9 +73,15 @@ const DetailTrackPage = async (props: any) => {
                 trackId: id,
                 sort: "-createdAt",
             },
-            nextOption: { cache: "no-store" },
+            nextOption: {
+                // next: {
+                //     tags: [`track-by-id`],
+                // },
+            },
         }
     );
+
+    // await new Promise((resolve) => setTimeout(resolve, 5000));
 
     if (!res.data) {
         notFound();

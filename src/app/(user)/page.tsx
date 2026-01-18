@@ -1,15 +1,13 @@
 import MainSlider from "@/components/main/main.slider";
 import { Container } from "@mui/material";
-import { getServerSession } from "next-auth/next";
 import { sendRequest } from "../../utils/api";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 
 export default async function HomePage() {
     //get session
-    const session = await getServerSession(authOptions);
+    // const session = await getServerSession(authOptions);
 
     const chills = await sendRequest<IBackendRes<ITrackTop[]>>({
-        url: "http://localhost:8000/api/v1/tracks/top",
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/top`,
         method: "POST",
         body: {
             category: "CHILL",
@@ -18,7 +16,7 @@ export default async function HomePage() {
     });
 
     const workouts = await sendRequest<IBackendRes<ITrackTop[]>>({
-        url: "http://localhost:8000/api/v1/tracks/top",
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/top`,
         method: "POST",
         body: {
             category: "WORKOUT",
@@ -27,7 +25,7 @@ export default async function HomePage() {
     });
 
     const party = await sendRequest<IBackendRes<ITrackTop[]>>({
-        url: "http://localhost:8000/api/v1/tracks/top",
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/top`,
         method: "POST",
         body: {
             category: "PARTY",

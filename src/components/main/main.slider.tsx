@@ -127,7 +127,7 @@ const MainSlider = (props: IProps) => {
                                 }}
                             >
                                 <Image
-                                    src={`${process.env.NEXT_PUBLIC_BACKEND}/images/${track.imgUrl}`}
+                                    src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`}
                                     alt="img soundcloud"
                                     fill
                                     style={{

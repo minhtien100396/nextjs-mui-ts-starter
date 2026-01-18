@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-    title: "HomePage",
-    description: "HomePageTIen",
+    title: "UserPage",
+    description: "UserPageTIen",
 };
 
 const test = {
