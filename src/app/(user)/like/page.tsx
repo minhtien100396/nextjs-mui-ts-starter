@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
 import type { Metadata } from "next";
 
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/api/auth/auth.option";
 import { convertSlugUrl, sendRequest } from "@/utils/api";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
@@ -55,7 +55,7 @@ const LikePage = async () => {
                                         color: "unset",
                                     }}
                                     href={`/track/${convertSlugUrl(
-                                        track.title
+                                        track.title,
                                     )}-${track._id}.html?audio=${
                                         track.trackUrl
                                     }`}

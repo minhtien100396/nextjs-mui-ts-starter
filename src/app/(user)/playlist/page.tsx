@@ -1,4 +1,4 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/api/auth/auth.option";
 import AddPlaylistTrack from "@/components/playlist/add.playlist.track";
 import CurrentTrack from "@/components/playlist/current.track";
 import NewPlaylist from "@/components/playlist/new.playlist";
@@ -85,7 +85,7 @@ const PlaylistPage = async () => {
                                                 <Divider />
                                             </Fragment>
                                         );
-                                    }
+                                    },
                                 )}
                                 {playlist?.tracks?.length === 0 && (
                                     <span>No data.</span>
